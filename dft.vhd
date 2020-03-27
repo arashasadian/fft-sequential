@@ -7,7 +7,8 @@ use work.fftpackage.all;
 entity dft is
     generic (size : integer := SIZE /2);
     port (clk :in std_logic;
-        input_array : in array_of_integer(size - 1 downto 0);
+        input_array_real : in array_of_integer(size - 1 downto 0);
+        input_array_imag : in array_of_integer(size-1 downto 0);
         output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
     );
 end entity dft;
@@ -17,7 +18,7 @@ architecture arch of dft is
     begin
 
         real_process : process( clk )
-            variable prefix1, prefix2, degree, cos_value, value: integer := 0;
+            variable prefix1, prefix2, degree, cos_value,sin_value, value: integer := 0;
             variable out_re : array_of_integer(size - 1 downto 0);
         begin
             if rising_edge(clk) then
@@ -29,7 +30,8 @@ architecture arch of dft is
                         degree := prefix2 * i mod 360;
                         report " degree is " & integer'image(degree);
                         cos_value := cos_rom(degree);
-                        out_re(k) := out_re(k) + input_array(i) * cos_value;
+                        sin_value := sin_rom(degree);
+                        out_re(k) := out_re(k) + input_array_real(i) * cos_value + input_array_imag(i) * sin_value;
                         report " value is " & integer'image(value);
                     end loop inner_loop;
                 end loop outer_loop;
@@ -38,7 +40,7 @@ architecture arch of dft is
         end process ; -- real_process
 
         imag_process : process( clk )
-            variable prefix1, prefix2, degree, sin_value, value: integer := 0;
+            variable prefix1, prefix2, degree,cos_value, sin_value, value: integer := 0;
         begin
             if rising_edge(clk) then
                 prefix1 := 360 / size;
@@ -49,10 +51,11 @@ architecture arch of dft is
                         degree := prefix2 * i mod 360;
                         report " degree is " & integer'image(degree);
                         sin_value := sin_rom(degree);
-                        value := value + input_array(i) * sin_value;
+                        cos_value := cos_rom(degree);
+                        value := value - input_array_real(i) * sin_value + input_array_imag(i) * cos_value ;
                         report " value is " & integer'image(value);
                     end loop inner_loop;
-                output_imag_array(k) <= -value;
+                output_imag_array(k) <= value;
                 end loop outer_loop;
             end if;
         end process ; -- imag_process

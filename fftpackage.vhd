@@ -14,6 +14,7 @@ package fftpackage is
         generic (size : integer := SIZE);
         port (clk :in std_logic;
             input_array : in array_of_integer(size - 1 downto 0);
+            input_array_imag : in array_of_integer(size-1 downto 0);
             output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
         );
     end component fft;
@@ -21,7 +22,8 @@ package fftpackage is
     component dft is
         generic (size : integer := SIZE/2);
         port (clk :in std_logic;
-            input_array : in array_of_integer(size - 1 downto 0);
+            input_array_real : in array_of_integer(size - 1 downto 0);
+            input_array_imag : in array_of_integer(size - 1 downto 0);
             output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
         );
     end component dft;
