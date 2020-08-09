@@ -10,9 +10,10 @@ end entity;
 architecture tb of testbench is
     signal clk : std_logic := '0';
     signal inp , inp_imag , out_real, out_imag : array_of_integer(SIZE - 1 downto 0);
+    signal end_sig : std_logic;
     
     begin
-        dut : fft port map(clk, inp,inp_imag, out_real, out_imag);
+        dut : fft port map(clk, inp,inp_imag, out_real, out_imag, end_sig);
 
         clk <= not(clk) after 10 ns;
 

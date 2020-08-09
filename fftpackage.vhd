@@ -4,18 +4,29 @@ use ieee.std_logic_1164.all;
 package fftpackage is
 
     type array_of_integer is array(natural range <>) of integer;
+    type array_2d is array(natural range <>) of array_of_integer;
 
     constant SIZE : integer := 8;
     constant rom_shift_amount : integer := -4;
     signal sin_rom, cos_rom : array_of_integer(360 downto 0);
     procedure rom_generator(signal enable : in std_logic; signal s_rom, c_rom : inout array_of_integer(360 downto 0));
 
+    component fft2 is
+        generic (rows, cols : integer := SIZE);
+        port(
+            input_array : in array_2d(rows - 1 downto 0)(cols - 1 downto 0);
+            output_array_real : out array_2d(rows - 1 downto 0)(cols - 1 downto 0);
+            output_array_imag : out array_2d(rows - 1 downto 0)(cols - 1 downto 0)
+        );
+    end component fft2;
+
     component fft is
         generic (size : integer := SIZE);
         port (clk :in std_logic;
             input_array : in array_of_integer(size - 1 downto 0);
             input_array_imag : in array_of_integer(size-1 downto 0);
-            output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
+            output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0);
+            end_sig : out std_logic
         );
     end component fft;
 
@@ -24,7 +35,8 @@ package fftpackage is
         port (clk :in std_logic;
             input_array_real : in array_of_integer(size - 1 downto 0);
             input_array_imag : in array_of_integer(size - 1 downto 0);
-            output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
+            output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0);
+            done : out std_logic
         );
     end component dft;
     

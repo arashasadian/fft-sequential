@@ -9,12 +9,13 @@ entity dft is
     port (clk :in std_logic;
         input_array_real : in array_of_integer(size - 1 downto 0);
         input_array_imag : in array_of_integer(size-1 downto 0);
-        output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0)
+        output_real_array, output_imag_array : out array_of_integer(size - 1 downto 0);
+        done : out std_logic
     );
 end entity dft;
 
 architecture arch of dft is
-
+    signal done1, done2 : std_logic;
     begin
 
         real_process : process( clk )
@@ -35,7 +36,8 @@ architecture arch of dft is
                         report " value is " & integer'image(value);
                     end loop inner_loop;
                 end loop outer_loop;
-            output_real_array <= out_re;
+                done1 <= '1';
+                output_real_array <= out_re;
             end if;
         end process ; -- real_process
 
@@ -55,8 +57,14 @@ architecture arch of dft is
                         value := value - input_array_real(i) * sin_value + input_array_imag(i) * cos_value ;
                         report " value is " & integer'image(value);
                     end loop inner_loop;
-                output_imag_array(k) <= value;
+                    output_imag_array(k) <= value;
                 end loop outer_loop;
+                done2 <= '1';
             end if;
         end process ; -- imag_process
+        end_process: process(clk)
+        begin
+            done <= '1' when done1 = '1' and done2 = '1' else '0';
+        end process end_process;
+
 end architecture arch;
