@@ -31,15 +31,15 @@ architecture arch of fft is
         dft_module_even_half : dft port map(dft_clk, input_even_half,input_even_half_imag, real_even_half, imag_even_half, dft1_end);
         dft_module2_odd_half : dft port map(dft_clk, input_odd_half,input_odd_half_imag, real_odd_half, imag_odd_half, dft2_end);
 
-        dft_end_process : process( dft1_end, dft2_end )
+        dft_end_process : process( dft1_end, dft2_end, clk)
         begin
-            output_calc_clk <= '1' when dft1_end = '1' and dft2_end = '1' else '0';
+            output_calc_clk <= '1' when dft1_end = '1' and dft2_end = '1' and rising_edge(clk) else '0';
         end process ; -- dft_end_process
 
         main_process : process( output_calc_clk )
             variable sin_value, cos_value, degree , prefix: integer;
         begin
-            if falling_edge(output_calc_clk) then
+            if rising_edge(output_calc_clk) then
                 if(start = '0') then
                     start <= '1';
                 end if;
@@ -55,8 +55,8 @@ architecture arch of fft is
                     
                 end loop for_loop;
                 end_sig <= '1';
-            else
-                end_sig <= '0';
+            -- else
+            --     end_sig <= '0';
             end if;
         end process ; -- main_process
         
