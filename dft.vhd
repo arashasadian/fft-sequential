@@ -20,24 +20,23 @@ architecture arch of dft is
 
         real_process : process( clk )
             variable prefix1, prefix2, degree, cos_value,sin_value, value: integer := 0;
-            variable out_re : array_of_integer(size - 1 downto 0);
         begin
             if rising_edge(clk) then
                 prefix1 := 360 / size;
                 outer_loop : for k in 0 to size - 1 loop
-                    out_re(k) := 0;
+                    value := 0;
                     prefix2 := prefix1 * k;
                     inner_loop : for i in 0 to size - 1 loop
                         degree := prefix2 * i mod 360;
                         report " degree is " & integer'image(degree);
                         cos_value := cos_rom(degree);
                         sin_value := sin_rom(degree);
-                        out_re(k) := out_re(k) + input_array_real(i) * cos_value + input_array_imag(i) * sin_value;
+                        value := value + input_array_real(i) * cos_value + input_array_imag(i) * sin_value;
                         report " value is " & integer'image(value);
                     end loop inner_loop;
+                    output_real_array(k) <= value;
                 end loop outer_loop;
                 done1 <= '1';
-                output_real_array <= out_re;
             end if;
         end process ; -- real_process
 
@@ -54,7 +53,7 @@ architecture arch of dft is
                         report " degree is " & integer'image(degree);
                         sin_value := sin_rom(degree);
                         cos_value := cos_rom(degree);
-                        value := value - input_array_real(i) * sin_value + input_array_imag(i) * cos_value ;
+                        value := value - (input_array_real(i) * sin_value) + (input_array_imag(i) * cos_value );
                         report " value is " & integer'image(value);
                     end loop inner_loop;
                     output_imag_array(k) <= value;
@@ -62,6 +61,7 @@ architecture arch of dft is
                 done2 <= '1';
             end if;
         end process ; -- imag_process
+
         end_process: process(clk)
         begin
             done <= '1' when done1 = '1' and done2 = '1' else '0';

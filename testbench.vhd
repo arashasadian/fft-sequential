@@ -19,29 +19,29 @@ architecture tb of testbench is
 
         test : process
         begin
-            inp(7) <= 7;
-            inp_imag(7) <= 1;
+            inp(7) <= 5;
+            inp_imag(7) <= 3;
 
-            inp(6) <= 6;
-            inp_imag(6) <= 1;
+            inp(6) <= 8;
+            inp_imag(6) <= 4;
             
-            inp(5) <= 5;
-            inp_imag(5) <= 1;
+            inp(5) <= 99;
+            inp_imag(5) <= 30;
             
-            inp(4) <= 4;
-            inp_imag(4) <= 1;
+            inp(4) <= 100;
+            inp_imag(4) <= 0;
             
-            inp(3) <= 3;
-            inp_imag(3) <= 1;
+            inp(3) <= -1;
+            inp_imag(3) <= 14;
             
-            inp(2) <= 2;
-            inp_imag(2) <= 1;
+            inp(2) <= 0;
+            inp_imag(2) <= 0;
             
-            inp(1) <= 1;
-            inp_imag(1) <= 1;
+            inp(1) <= 11;
+            inp_imag(1) <= 0;
             
-            inp(0) <= 0;
-            inp_imag(0) <= 1;
+            inp(0) <= 12;
+            inp_imag(0) <= 65;
             wait for 20 ns;
         end process ; -- test
         

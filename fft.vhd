@@ -29,7 +29,7 @@ architecture arch of fft is
         rom_generator(start, sin_rom, cos_rom); -- initiate rom for sin and cos
 
         dft_module_even_half : dft port map(dft_clk, input_even_half,input_even_half_imag, real_even_half, imag_even_half, dft1_end);
-        dft_module2_odd_half : dft port map(dft_clk, input_odd_half,input_odd_half_imag, real_odd_half, imag_odd_half, dft2_end);
+        dft_module_odd_half : dft port map(dft_clk, input_odd_half,input_odd_half_imag, real_odd_half, imag_odd_half, dft2_end);
 
         dft_end_process : process( dft1_end, dft2_end, clk)
         begin
@@ -48,10 +48,10 @@ architecture arch of fft is
                     degree := (prefix * k) mod 360;
                     sin_value := sin_rom(degree);
                     cos_value := cos_rom(degree);
-                    output_real_array(k) <= (real_even_half(k) * 100) + (cos_value * real_odd_half(k)) + (sin_value * imag_odd_half(k));
-                    output_imag_array(k) <= (imag_even_half(k)*100) - (sin_value * real_odd_half(k)) + cos_value * imag_odd_half(k);
-                    output_real_array(k + size/2) <= -(real_odd_half(k) * cos_value) - (imag_odd_half(k) * sin_value) + real_even_half(k)*100;
-                    output_imag_array(k + size/2) <= (real_odd_half(k) * sin_value ) - (imag_odd_half(k) * cos_value) + imag_even_half(k)*100;
+                    output_real_array(k) <= (real_even_half(k) * 1000) + (cos_value * real_odd_half(k)) + (sin_value * imag_odd_half(k));
+                    output_imag_array(k) <= (imag_even_half(k)*1000) - (sin_value * real_odd_half(k)) + cos_value * imag_odd_half(k);
+                    output_real_array(k + size/2) <= -(real_odd_half(k) * cos_value) - (imag_odd_half(k) * sin_value) + real_even_half(k)*1000;
+                    output_imag_array(k + size/2) <= (real_odd_half(k) * sin_value ) - (imag_odd_half(k) * cos_value) + imag_even_half(k)*1000;
                     
                 end loop for_loop;
                 end_sig <= '1';
@@ -65,7 +65,7 @@ architecture arch of fft is
             dft_clk <= '0';
             if rising_edge(clk) then
                 split_loop :for i in 0 to size/2 - 1 loop
-                    input_even_half(i) <= input_array(2 * i);
+                    input_even_half(i) <= input_array(2 * i)    ;
                     input_odd_half(i) <= input_array(2 * i + 1);
                     input_even_half_imag(i) <= input_array_imag(2 * i);
                     input_odd_half_imag(i) <= input_array_imag(2 * i + 1);
